@@ -26,7 +26,7 @@ Agent support is declarative — see `agents.d/` for definitions. Adding a new a
 ### Option 1: Install from GitHub Releases (Recommended)
 
 ```bash
-curl -fsSL https://github.com/loongsuite/loongsuite-pilot/releases/latest/download/installer.sh -o /tmp/loongsuite-pilot-installer.sh && bash /tmp/loongsuite-pilot-installer.sh install
+curl -fsSL https://loongcollector-community-edition.oss-cn-shanghai.aliyuncs.com/loongsuite-pilot/installer.sh -o /tmp/loongsuite-pilot-installer.sh && bash /tmp/loongsuite-pilot-installer.sh install
 ```
 
 The installer detects installed agents, lets you choose which to monitor, deploys hooks, and registers a background service.
@@ -36,7 +36,7 @@ The installer detects installed agents, lets you choose which to monitor, deploy
 All parameters are optional and can be combined:
 
 ```bash
-curl -fsSL https://github.com/loongsuite/loongsuite-pilot/releases/latest/download/installer.sh -o /tmp/loongsuite-pilot-installer.sh && bash /tmp/loongsuite-pilot-installer.sh install \
+curl -fsSL https://loongcollector-community-edition.oss-cn-shanghai.aliyuncs.com/loongsuite-pilot/installer.sh -o /tmp/loongsuite-pilot-installer.sh && bash /tmp/loongsuite-pilot-installer.sh install \
   --version 1.2.0 \
   --agents "claude-code,cursor,qoder-work" \
   --userId "your-user-id" \
@@ -66,8 +66,8 @@ curl -fsSL https://github.com/loongsuite/loongsuite-pilot/releases/latest/downlo
 Uninstall:
 
 ```bash
-curl -fsSL https://github.com/loongsuite/loongsuite-pilot/releases/latest/download/installer.sh -o /tmp/loongsuite-pilot-installer.sh && bash /tmp/loongsuite-pilot-installer.sh uninstall          # keep data
-curl -fsSL https://github.com/loongsuite/loongsuite-pilot/releases/latest/download/installer.sh -o /tmp/loongsuite-pilot-installer.sh && bash /tmp/loongsuite-pilot-installer.sh uninstall --purge  # remove all data
+curl -fsSL https://loongcollector-community-edition.oss-cn-shanghai.aliyuncs.com/loongsuite-pilot/installer.sh -o /tmp/loongsuite-pilot-installer.sh && bash /tmp/loongsuite-pilot-installer.sh uninstall          # keep data
+curl -fsSL https://loongcollector-community-edition.oss-cn-shanghai.aliyuncs.com/loongsuite-pilot/installer.sh -o /tmp/loongsuite-pilot-installer.sh && bash /tmp/loongsuite-pilot-installer.sh uninstall --purge  # remove all data
 ```
 
 ### Option 2: Build from Source
