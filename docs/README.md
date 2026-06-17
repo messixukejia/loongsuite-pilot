@@ -1,5 +1,7 @@
 # LoongSuite Pilot Documentation
 
+English | [简体中文](zh-CN/README.md)
+
 This directory contains user-facing guides for installing, configuring, operating, and extending LoongSuite Pilot.
 
 ## Start Here

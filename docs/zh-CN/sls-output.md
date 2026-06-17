@@ -1,10 +1,10 @@
-# SLS Output
+# SLS 输出
 
-English | [简体中文](zh-CN/sls-output.md)
+[English](../sls-output.md) | 简体中文
 
-SLS output sends normalized Pilot events to Alibaba Cloud Log Service. Use it when you want centralized search, dashboards, alerting, or long-term storage outside the developer machine.
+SLS 输出会将规范化的 Pilot 事件发送到阿里云日志服务。适用于集中检索、看板、告警或长期存储。
 
-## Enable SLS During Installation
+## 安装时开启 SLS
 
 ```bash
 bash /tmp/loongsuite-pilot-installer.sh install \
@@ -13,16 +13,16 @@ bash /tmp/loongsuite-pilot-installer.sh install \
   --sls-logstore "my-logstore"
 ```
 
-For AK mode, also pass:
+AK 模式还需要传入：
 
 ```bash
 --sls-ak-id "your-access-key-id" \
 --sls-ak-secret "your-access-key-secret"
 ```
 
-## WebTracking Mode
+## WebTracking 模式
 
-Use WebTracking mode when the destination logstore accepts WebTracking writes.
+当目标 logstore 支持 WebTracking 写入时使用该模式。
 
 ```json
 {
@@ -38,9 +38,9 @@ Use WebTracking mode when the destination logstore accepts WebTracking writes.
 }
 ```
 
-## AK Mode
+## AK 模式
 
-Use AK mode when your SLS destination requires Access Key authentication.
+当目标 SLS 需要 Access Key 鉴权时使用该模式。
 
 ```json
 {
@@ -56,9 +56,9 @@ Use AK mode when your SLS destination requires Access Key authentication.
 }
 ```
 
-## Multiple SLS Destinations
+## 多 SLS 目标
 
-Use an array when the same events should be sent to multiple SLS destinations:
+使用数组配置可以将同一批事件发送到多个 SLS 目标：
 
 ```json
 {
@@ -83,37 +83,37 @@ Use an array when the same events should be sent to multiple SLS destinations:
 }
 ```
 
-## Environment Variables
+## 环境变量
 
-| Variable | Description |
-|----------|-------------|
-| `LOONGSUITE_SLS_ENDPOINT` | SLS endpoint URL. |
-| `LOONGSUITE_SLS_PROJECT` | SLS project. |
-| `LOONGSUITE_SLS_LOGSTORE` | SLS logstore. |
-| `LOONGSUITE_SLS_MODE` | `webtracking` or `ak`. |
-| `LOONGSUITE_SLS_ACCESS_KEY_ID` | Access Key ID for AK mode. |
-| `LOONGSUITE_SLS_ACCESS_KEY_SECRET` | Access Key Secret for AK mode. |
-| `LOONGSUITE_PILOT_COLLECT_LOG` | Set `false` or `0` to disable SLS reporting. |
+| 环境变量 | 说明 |
+|----------|------|
+| `LOONGSUITE_SLS_ENDPOINT` | SLS endpoint。 |
+| `LOONGSUITE_SLS_PROJECT` | SLS project。 |
+| `LOONGSUITE_SLS_LOGSTORE` | SLS logstore。 |
+| `LOONGSUITE_SLS_MODE` | `webtracking` 或 `ak`。 |
+| `LOONGSUITE_SLS_ACCESS_KEY_ID` | AK 模式的 Access Key ID。 |
+| `LOONGSUITE_SLS_ACCESS_KEY_SECRET` | AK 模式的 Access Key Secret。 |
+| `LOONGSUITE_PILOT_COLLECT_LOG` | 设置为 `false` 或 `0` 可关闭 SLS 上报。 |
 
-## Verify SLS Output
+## 验证 SLS 输出
 
 ```bash
 loongsuite-pilot restart
 loongsuite-pilot status
 ```
 
-If SLS upload fails, failed batches are persisted locally:
+如果 SLS 上传失败，失败批次会持久化到本地：
 
 ```bash
 ls ~/.loongsuite-pilot/sls-failed-logs/
 ```
 
-Local JSONL output can help confirm whether collection itself is working before debugging SLS delivery:
+调试 SLS 前，可以先通过本地 JSONL 确认采集本身是否正常：
 
 ```bash
 tail -f ~/.loongsuite-pilot/logs/output/*.jsonl
 ```
 
-## Privacy Notes
+## 隐私说明
 
-SLS is a remote destination. Review [Agent Configuration](agents.md) for content capture controls and [Data Masking](masking.md) for secret masking before enabling SLS in sensitive environments.
+SLS 是远端输出目标。敏感环境中开启前，请先查看 [Agent 配置](agents.md) 的内容采集控制和 [数据脱敏](masking.md)。

@@ -1,5 +1,7 @@
 # Installation
 
+English | [简体中文](zh-CN/installation.md)
+
 Use this guide to install, verify, uninstall, or run LoongSuite Pilot from source.
 
 ## Prerequisites

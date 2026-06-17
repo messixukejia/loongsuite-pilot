@@ -1,5 +1,7 @@
 # Configuration Guide
 
+English | [简体中文](zh-CN/configuration.md)
+
 LoongSuite Pilot can be configured through installer options, environment variables, and `config.json`. This page explains where configuration lives and points to task-specific setup guides.
 
 ## Configuration Loading Order

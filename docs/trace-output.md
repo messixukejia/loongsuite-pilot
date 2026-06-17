@@ -1,5 +1,7 @@
 # Trace Output
 
+English | [简体中文](zh-CN/trace-output.md)
+
 Trace output exports GenAI activity as OpenTelemetry traces. Use it when you want to analyze sessions, turns, model calls, and tool calls in a trace or APM backend.
 
 Trace output is separate from log output. SLS, JSONL, and HTTP receive event records; OTLP trace output converts those records into trace spans.

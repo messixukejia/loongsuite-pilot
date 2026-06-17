@@ -1,5 +1,7 @@
 # Data Masking
 
+English | [简体中文](zh-CN/masking.md)
+
 LoongSuite Pilot can mask common secrets before normalized events are sent to output backends. Use this when prompts, completions, tool arguments, or tool results may contain credentials.
 
 Masking is separate from message content capture:
@@ -117,4 +119,3 @@ Expected output should contain mask markers such as `[APIKEY_MASKED]` instead of
 
 - See [Local JSONL Output](local-jsonl-output.md), [SLS Output](sls-output.md), [Trace Output](trace-output.md), and [HTTP Output](http-output.md) for output backend setup.
 - See [Output Event Schema](output-event-schema.md) for fields marked as opt-in sensitive content.
-

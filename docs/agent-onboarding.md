@@ -1,5 +1,7 @@
 # Agent Onboarding
 
+English | [简体中文](zh-CN/agent-onboarding.md)
+
 Use this guide when you want LoongSuite Pilot to collect telemetry from a new AI coding agent. The goal is to make the new integration look like every other supported agent to users: auto-detectable, configurable, and exported through the same event schema and output backends.
 
 ## Integration Choices

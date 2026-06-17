@@ -1,5 +1,7 @@
 # Local JSONL Output
 
+English | [简体中文](zh-CN/local-jsonl-output.md)
+
 Local JSONL output writes normalized Pilot events to files on the same machine. It is enabled by default and is the easiest way to verify that collection is working before configuring a remote backend.
 
 ## Default Location

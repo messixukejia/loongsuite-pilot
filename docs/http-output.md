@@ -1,5 +1,7 @@
 # HTTP Output
 
+English | [简体中文](zh-CN/http-output.md)
+
 HTTP output POSTs normalized Pilot events to a custom endpoint. Use it when you already have an ingestion gateway or want to forward Pilot data into your own service.
 
 ## Configure HTTP Output

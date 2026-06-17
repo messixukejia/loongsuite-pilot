@@ -1,5 +1,7 @@
 # Product Overview
 
+English | [简体中文](zh-CN/overview.md)
+
 LoongSuite Pilot runs on a developer machine and collects telemetry from supported AI coding agents. It is designed for teams that need a consistent view of agent usage, model calls, tool activity, token consumption, and operational health without asking each agent to report in a different format.
 
 ## Core Capabilities

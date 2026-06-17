@@ -1,5 +1,7 @@
 # Agent Configuration
 
+English | [简体中文](zh-CN/agents.md)
+
 Use this guide to choose which AI coding agents Pilot should collect from and whether sensitive message content should be captured.
 
 ## Supported Agent IDs
