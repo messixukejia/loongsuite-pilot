@@ -70,6 +70,97 @@ Pilot 也支持 CMS 风格的 Trace 配置：
 | `LOONGSUITE_PILOT_CMS_ENDPOINT` | CMS 或 ARMS Trace endpoint。 |
 | `LOONGSUITE_PILOT_CMS_WORKSPACE` | workspace header 值。 |
 
+## 后端接入示例
+
+### Jaeger
+
+[Jaeger](https://www.jaegertracing.io/) 原生支持 OTLP 数据接收。使用 all-in-one 镜像快速搭建本地环境：
+
+```bash
+docker run -d --name jaeger \
+  -e COLLECTOR_OTLP_ENABLED=true \
+  -p 16686:16686 \
+  -p 4317:4317 \
+  -p 4318:4318 \
+  jaegertracing/all-in-one:latest
+```
+
+配置 Pilot：
+
+```json
+{
+  "collectTrace": true,
+  "otlpTrace": {
+    "endpoint": "http://localhost:4318",
+    "serviceName": "loongsuite-pilot"
+  }
+}
+```
+
+或通过环境变量：
+
+```bash
+export LOONGSUITE_PILOT_OTLP_ENDPOINT=http://localhost:4318
+export LOONGSUITE_PILOT_COLLECT_TRACE=true
+```
+
+打开 [http://localhost:16686](http://localhost:16686)，选择 service name 查看 Trace。
+
+### Langfuse
+
+[Langfuse](https://langfuse.com/) 是一个 LLM 可观测平台，原生支持 OTLP 接入，提供成本追踪、Token 用量、Prompt/Completion 内容等 LLM 专属视图。
+
+**1. 启动 Langfuse（自部署）：**
+
+```bash
+mkdir -p /tmp/langfuse && cd /tmp/langfuse
+curl -sLO https://raw.githubusercontent.com/langfuse/langfuse/main/docker-compose.yml
+
+cat > .env << 'EOF'
+NEXTAUTH_SECRET=your-nextauth-secret
+SALT=your-salt
+ENCRYPTION_KEY=0000000000000000000000000000000000000000000000000000000000000000
+LANGFUSE_INIT_ORG_NAME=MyOrg
+LANGFUSE_INIT_PROJECT_NAME=loongsuite-pilot
+LANGFUSE_INIT_PROJECT_PUBLIC_KEY=pk-lf-my-public-key
+LANGFUSE_INIT_PROJECT_SECRET_KEY=sk-lf-my-secret-key
+LANGFUSE_INIT_USER_EMAIL=admin@example.com
+LANGFUSE_INIT_USER_NAME=admin
+LANGFUSE_INIT_USER_PASSWORD=<your-password>
+TELEMETRY_ENABLED=false
+EOF
+
+docker compose up -d
+```
+
+**2. 配置 Pilot：**
+
+Langfuse OTLP endpoint 需要 Basic 认证，格式为 `Base64(public_key:secret_key)`：
+
+```bash
+echo -n "<public_key>:<secret_key>" | base64
+```
+
+添加到 `~/.loongsuite-pilot/config.json`：
+
+```json
+{
+  "collectTrace": true,
+  "otlpTrace": {
+    "endpoint": "http://localhost:3000/api/public/otel",
+    "headers": {
+      "Authorization": "Basic <base64-encoded-credentials>"
+    },
+    "serviceName": "loongsuite-pilot",
+    "captureMessageContent": true
+  }
+}
+```
+
+打开 [http://localhost:3000](http://localhost:3000)，进入 **Traces** 页面查看 Agent 会话，包括模型名称、Token 用量和费用详情。
+
+> **注意：** Langfuse 使用 HTTP 接收 OTLP 数据，不支持 gRPC（端口 4317）。endpoint 路径 `/api/public/otel` 是 OTLP base path，Pilot 会自动追加 `/v1/traces`。
+
 ## Trace 中的内容采集
 
 如果开启消息内容采集，Trace span 可能包含敏感内容。敏感或团队统一管理的环境建议：

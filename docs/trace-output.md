@@ -70,6 +70,97 @@ Environment variables:
 | `LOONGSUITE_PILOT_CMS_ENDPOINT` | CMS or ARMS trace endpoint. |
 | `LOONGSUITE_PILOT_CMS_WORKSPACE` | Workspace header value. |
 
+## Backend Examples
+
+### Jaeger
+
+[Jaeger](https://www.jaegertracing.io/) natively supports OTLP ingestion. Use the all-in-one image for a quick local setup:
+
+```bash
+docker run -d --name jaeger \
+  -e COLLECTOR_OTLP_ENABLED=true \
+  -p 16686:16686 \
+  -p 4317:4317 \
+  -p 4318:4318 \
+  jaegertracing/all-in-one:latest
+```
+
+Configure Pilot:
+
+```json
+{
+  "collectTrace": true,
+  "otlpTrace": {
+    "endpoint": "http://localhost:4318",
+    "serviceName": "loongsuite-pilot"
+  }
+}
+```
+
+Or via environment variables:
+
+```bash
+export LOONGSUITE_PILOT_OTLP_ENDPOINT=http://localhost:4318
+export LOONGSUITE_PILOT_COLLECT_TRACE=true
+```
+
+Open [http://localhost:16686](http://localhost:16686) and select the service name to view traces.
+
+### Langfuse
+
+[Langfuse](https://langfuse.com/) is an LLM observability platform with native OTLP ingestion. It provides LLM-specific views including cost tracking, token usage, and prompt/completion content.
+
+**1. Start Langfuse (self-hosted):**
+
+```bash
+mkdir -p /tmp/langfuse && cd /tmp/langfuse
+curl -sLO https://raw.githubusercontent.com/langfuse/langfuse/main/docker-compose.yml
+
+cat > .env << 'EOF'
+NEXTAUTH_SECRET=your-nextauth-secret
+SALT=your-salt
+ENCRYPTION_KEY=0000000000000000000000000000000000000000000000000000000000000000
+LANGFUSE_INIT_ORG_NAME=MyOrg
+LANGFUSE_INIT_PROJECT_NAME=loongsuite-pilot
+LANGFUSE_INIT_PROJECT_PUBLIC_KEY=pk-lf-my-public-key
+LANGFUSE_INIT_PROJECT_SECRET_KEY=sk-lf-my-secret-key
+LANGFUSE_INIT_USER_EMAIL=admin@example.com
+LANGFUSE_INIT_USER_NAME=admin
+LANGFUSE_INIT_USER_PASSWORD=<your-password>
+TELEMETRY_ENABLED=false
+EOF
+
+docker compose up -d
+```
+
+**2. Configure Pilot:**
+
+Langfuse OTLP endpoint requires Basic authentication with `Base64(public_key:secret_key)`:
+
+```bash
+echo -n "<public_key>:<secret_key>" | base64
+```
+
+Add to `~/.loongsuite-pilot/config.json`:
+
+```json
+{
+  "collectTrace": true,
+  "otlpTrace": {
+    "endpoint": "http://localhost:3000/api/public/otel",
+    "headers": {
+      "Authorization": "Basic <base64-encoded-credentials>"
+    },
+    "serviceName": "loongsuite-pilot",
+    "captureMessageContent": true
+  }
+}
+```
+
+Open [http://localhost:3000](http://localhost:3000) and navigate to **Traces** to view agent sessions with model name, token usage, and cost details.
+
+> **Note:** Langfuse uses HTTP for OTLP — gRPC (port 4317) is not supported. The endpoint path `/api/public/otel` is the OTLP base; Pilot auto-appends `/v1/traces`.
+
 ## Content Capture In Traces
 
 Trace spans can carry sensitive content if message capture is enabled. For sensitive or team-managed setups, prefer:
