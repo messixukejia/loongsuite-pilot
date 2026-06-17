@@ -2,6 +2,8 @@
 
 LoongSuite Pilot normalizes collected activity into GenAI telemetry events. Sensitive content fields are opt-in and can be masked before output.
 
+The types below describe the normalized event values. Log-style outputs such as JSONL and SLS may serialize values as strings for backend compatibility.
+
 ## Event Names
 
 | `event.name` | Description |
