@@ -114,10 +114,11 @@ Open [http://localhost:16686](http://localhost:16686) and select the service nam
 **1. Start Langfuse (self-hosted):**
 
 ```bash
-mkdir -p /tmp/langfuse && cd /tmp/langfuse
-curl -sLO https://raw.githubusercontent.com/langfuse/langfuse/main/docker-compose.yml
+mkdir -p ~/langfuse && cd ~/langfuse
+curl -sLO https://raw.githubusercontent.com/langfuse/langfuse/v3.187.0/docker-compose.yml
 
 # Generate random secrets (do NOT use placeholder values in production)
+umask 077
 cat > .env << EOF
 NEXTAUTH_SECRET=$(openssl rand -base64 32)
 SALT=$(openssl rand -base64 32)
@@ -135,7 +136,7 @@ EOF
 docker compose up -d
 ```
 
-> **Security:** The `.env` file above generates cryptographically random values for secrets. Review the generated `.env` before starting the services, and note the generated password for your first login.
+> **Security:** The `.env` file above generates cryptographically random values for secrets. The `umask 077` ensures the file is only readable by the current user. Review the generated `.env` before starting the services, and note the generated password for your first login.
 
 **2. Configure Pilot:**
 
@@ -148,6 +149,8 @@ export LOONGSUITE_PILOT_COLLECT_TRACE=true
 export LOONGSUITE_PILOT_OTLP_ENDPOINT=http://localhost:3000/api/public/otel
 export LOONGSUITE_PILOT_OTLP_HEADERS="{\"Authorization\": \"Basic $LANGFUSE_AUTH\"}"
 ```
+
+Pilot will send traces to `http://localhost:3000/api/public/otel/v1/traces` (the `/v1/traces` suffix is auto-appended).
 
 Alternatively, add to `~/.loongsuite-pilot/config.json` (not recommended for shared or version-controlled environments):
 
@@ -166,7 +169,7 @@ Alternatively, add to `~/.loongsuite-pilot/config.json` (not recommended for sha
 
 Open [http://localhost:3000](http://localhost:3000) and navigate to **Traces** to view agent sessions with model name, token usage, and cost details.
 
-> **Note:** Langfuse uses HTTP for OTLP — gRPC (port 4317) is not supported. To include LLM message content in traces, set `captureMessageContent` to `true` in config (default is `false`).
+> **Note:** Langfuse uses HTTP for OTLP — gRPC (port 4317) is not supported. LLM message content is included in traces by default (`captureMessageContent` defaults to `true`). To disable it, explicitly set `captureMessageContent` to `false` in config.
 
 ## Content Capture In Traces
 

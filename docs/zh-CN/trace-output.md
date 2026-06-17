@@ -114,10 +114,11 @@ export LOONGSUITE_PILOT_COLLECT_TRACE=true
 **1. 启动 Langfuse（自部署）：**
 
 ```bash
-mkdir -p /tmp/langfuse && cd /tmp/langfuse
-curl -sLO https://raw.githubusercontent.com/langfuse/langfuse/main/docker-compose.yml
+mkdir -p ~/langfuse && cd ~/langfuse
+curl -sLO https://raw.githubusercontent.com/langfuse/langfuse/v3.187.0/docker-compose.yml
 
 # 生成随机密钥（生产环境请勿使用占位符）
+umask 077
 cat > .env << EOF
 NEXTAUTH_SECRET=$(openssl rand -base64 32)
 SALT=$(openssl rand -base64 32)
@@ -135,7 +136,7 @@ EOF
 docker compose up -d
 ```
 
-> **安全提示：** 上述 `.env` 文件会自动生成随机密钥。启动服务前请检查生成的 `.env` 文件，并记录生成的登录密码。
+> **安全提示：** 上述 `.env` 文件会自动生成随机密钥。`umask 077` 确保文件仅当前用户可读。启动服务前请检查生成的 `.env` 文件，并记录生成的登录密码。
 
 **2. 配置 Pilot：**
 
@@ -148,6 +149,8 @@ export LOONGSUITE_PILOT_COLLECT_TRACE=true
 export LOONGSUITE_PILOT_OTLP_ENDPOINT=http://localhost:3000/api/public/otel
 export LOONGSUITE_PILOT_OTLP_HEADERS="{\"Authorization\": \"Basic $LANGFUSE_AUTH\"}"
 ```
+
+Pilot 会将 Trace 发送到 `http://localhost:3000/api/public/otel/v1/traces`（`/v1/traces` 后缀自动追加）。
 
 也可以添加到 `~/.loongsuite-pilot/config.json`（不推荐在共享或版本控制环境中使用）：
 
@@ -166,7 +169,7 @@ export LOONGSUITE_PILOT_OTLP_HEADERS="{\"Authorization\": \"Basic $LANGFUSE_AUTH
 
 打开 [http://localhost:3000](http://localhost:3000)，进入 **Traces** 页面查看 Agent 会话，包括模型名称、Token 用量和费用详情。
 
-> **注意：** Langfuse 使用 HTTP 接收 OTLP 数据，不支持 gRPC（端口 4317）。如需在 Trace 中包含 LLM 消息内容，请在配置中设置 `captureMessageContent` 为 `true`（默认为 `false`）。
+> **注意：** Langfuse 使用 HTTP 接收 OTLP 数据，不支持 gRPC（端口 4317）。LLM 消息内容默认包含在 Trace 中（`captureMessageContent` 默认为 `true`）。如需关闭，请在配置中显式设置 `captureMessageContent` 为 `false`。
 
 ## Trace 中的内容采集
 
